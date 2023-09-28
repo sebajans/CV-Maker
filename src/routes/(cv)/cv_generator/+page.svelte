@@ -6,15 +6,30 @@
   import DarkModeButton from "$components/base/DarkModeButton.svelte";
   import LanguageSwitcher from "$components/base/LanguageSwitcher.svelte";
 
+  import Grid, { GridItem } from "svelte-grid-extended";
+
   function printPage() {
+    const main = document.querySelector("main");
     const body = document.querySelector("body");
-    if (body) {
+    if (main && body) {
+      main.style.width = "21cm";
+      main.style.height = "29.7cm";
+      main.style.margin = "0px !important";
+      main.style.padding = "0";
       body.style.width = "21cm";
       body.style.height = "29.7cm";
       body.style.margin = "0px !important";
       body.style.padding = "0";
+      window.print();
+      main.style.removeProperty("width");
+      main.style.removeProperty("height");
+      main.style.removeProperty("margin");
+      main.style.removeProperty("padding");
+      body.style.removeProperty("width");
+      body.style.removeProperty("height");
+      body.style.removeProperty("margin");
+      body.style.removeProperty("padding");
     }
-    window.print();
   }
 
   interface IntroItems {
@@ -73,13 +88,30 @@
   $: console.log(filteredIntroText);
 
   const { t } = getTranslate();
+
+  const itemSize = { height: 40 };
+  const items = [
+    { id: "0", x: 0, y: 0, w: 2, h: 5 },
+    { id: "1", x: 2, y: 2, w: 2, h: 2 },
+    { id: "2", x: 2, y: 0, w: 1, h: 2 },
+    { id: "3", x: 3, y: 0, w: 2, h: 2 },
+    { id: "4", x: 3, y: 8, w: 1, h: 3 },
+    { id: "5", x: 2, y: 0, w: 2, h: 8 },
+    { id: "6", x: 2, y: 5, w: 1, h: 1 },
+    { id: "7", x: 2, y: 6, w: 3, h: 2 },
+    { id: "8", x: 2, y: 4, w: 2, h: 2 },
+  ];
 </script>
 
-<div class="hide-on-print sticky top-0 inset-x-0 pt-4 px-4">
+<div class="hide-on-print absolute inset-y-0 left-0 pt-4 px-4 flex">
   <div
-    class=" flex flex-row justify-between items-center space-x-6 border border-teal-600/30 shadow-md mb-4 z-50 w-full h-14 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md p-2"
+    class="flex flex-col justify-between items-center space-y-6 border border-teal-600/30 shadow-md mb-4 z-50 w-40 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md p-2"
   >
-    <div>
+    <div class="flex flex-row space-x-2">
+      <LanguageSwitcher />
+      <DarkModeButton />
+    </div>
+    <div id="add-items" class=" flex flex-col">
       <span class="mx-2 dark:text-teal-50">Categories:</span>
       <button class="btn btn-navajo" on:click={() => selectCategory(["webdev"])}
         >Web dev</button
@@ -96,10 +128,6 @@
       >
     </div>
     <button class="btn btn-navajo" on:click={printPage}>print page</button>
-    <div class="flex flex-row space-x-2">
-      <LanguageSwitcher />
-      <DarkModeButton />
-    </div>
   </div>
 </div>
 <page class="section-to-print space-y-10">
@@ -107,7 +135,20 @@
     id="page-1"
     class="!h-[29.7cm] p-[2cm] outline-1 outline outline-offset-1 !w-[21cm] flex justify-center bg-teal-50 dark:bg-teal-900"
   >
-    <div
+    <Grid {itemSize} gap={10} cols={8} class="" collision="push">
+      {#each items as item}
+        <GridItem
+          class="bg-slate-200 print-this"
+          x={item.x}
+          y={item.y}
+          w={item.w}
+          h={item.h}
+        >
+          <div class="item">{item.id}</div>
+        </GridItem>
+      {/each}
+    </Grid>
+    <!-- <div
       class=" h-[25.7cm] grid-rows-12 grid grid-cols-[10.5cm,_0.2cm,_5.5cm] gap-x-[0.4cm] gap-y-[0.5cm]"
     >
       <div class="row-start-1 col-start-1 row-span-3 flex flex-col">
@@ -117,21 +158,13 @@
           Sebastian Jans
         </h1>
         {#each filteredIntroText as text}
-          <!-- {#if text.fieldOfWork.some((field) => field === "webdev")} -->
           <p class="text-left text-sm my-auto align-baseline">
             <T
               keyName="introduction-text-{text.name}"
               defaultValue={text.defaultValue}
             />
           </p>
-          <!-- {/if} -->
         {/each}
-        <!-- <p class="text-left text-sm my-auto align-baseline">
-          <T
-            keyName="introduction-text"
-            defaultValue="Hey, I'm Sebastian. I'm a web developer and graphic designer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I started to learn web development and graphic design in my free time. I'm passionate about creating beautiful and functional websites and designs."
-          />
-        </p> -->
       </div>
 
       <div
@@ -273,9 +306,9 @@
         {#each Object.entries(filteredSkillItems) as [categoryName, skills], i}
           {#if skills.categoryArray.length > 0 && categoryName !== "Language Skills"}
             <div class="flex flex-row flex-wrap">
-              <!-- <h3 class="pt-2">
+              <h3 class="pt-2">
                 <T keyName={categoryName} defaultValue={categoryName} />
-              </h3> -->
+              </h3>
               {#each skills.categoryArray as skill}
                 <p class="text-sm w-full leading-loose">
                   <T keyName={skill.name} defaultValue={skill.name} />
@@ -285,7 +318,7 @@
           {/if}
         {/each}
       </div>
-    </div>
+    </div> -->
   </div>
   <div
     id="page-2"
@@ -334,8 +367,6 @@
             />
           </p>
         </div>
-        <!-- </div>
-      <div class="col-span-1 row-start-2 row-span-1 col-start-1"> -->
         <h2 class="!pt-0 mt-8">
           {$t({ key: "my-certificate", defaultValue: "Certificates" })}
         </h2>
@@ -377,9 +408,6 @@
         {#each Object.entries(filteredSkillItems) as [categoryName, skills], i}
           {#if skills.categoryArray.length > 0 && categoryName === "Language Skills"}
             <div class="flex flex-row flex-wrap">
-              <!-- <h3 class="pt-2">
-                <T keyName={categoryName} defaultValue={categoryName} />
-              </h3> -->
               {#each skills.categoryArray as skill}
                 <p class="text-sm w-full leading-loose">
                   <T keyName={skill.name} defaultValue={skill.name} />
@@ -406,15 +434,8 @@
   @page {
     margin: 0cm !important;
   }
-  @media print {
-    /* html * {
-			visibility: hidden;
-		} 
-		 body {
-			width: 21cm;
-			height: 29.7cm;
-		} */
 
+  @media print {
     .hide-on-print {
       visibility: hidden;
     }
@@ -430,7 +451,8 @@
     }
 
     .section-to-print,
-    .section-to-print * {
+    .section-to-print *,
+    .print-this {
       visibility: visible;
     }
     .section-to-print {

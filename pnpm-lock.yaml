@@ -11,6 +11,9 @@ dependencies:
   '@tolgee/svelte':
     specifier: ^5.12.0
     version: 5.12.0(svelte@4.2.1)
+  svelte-grid-extended:
+    specifier: ^1.1.1
+    version: 1.1.1
 
 devDependencies:
   '@sveltejs/adapter-auto':
@@ -55,6 +58,9 @@ devDependencies:
   svelte-check:
     specifier: ^3.4.3
     version: 3.5.2(postcss@8.4.30)(svelte@4.2.1)
+  svelte-grid:
+    specifier: ^5.1.2
+    version: 5.1.2
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.3
@@ -1998,6 +2004,14 @@ packages:
       postcss: 8.4.30
       postcss-scss: 4.0.8(postcss@8.4.30)
       svelte: 4.2.1
+    dev: true
+
+  /svelte-grid-extended@1.1.1:
+    resolution: {integrity: sha512-WwoaK69W2OfpXqrzdZU705Fl/326J3gcgGuAN7qv5MDpasMTIiqJuSmD7GrdgrgTfDuKIPqKSzVstlrkMlzTMg==}
+    dev: false
+
+  /svelte-grid@5.1.2:
+    resolution: {integrity: sha512-Suwgb+L3LALhTyA7z4vn87UOJ+xBY6EeKa6MdWqDv/lZOtQgIZ21ry/I6txIn9IC0p8of4AiOXupkSMcZ+DEug==}
     dev: true
 
   /svelte-hmr@0.15.3(svelte@4.2.1):

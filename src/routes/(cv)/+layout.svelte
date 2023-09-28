@@ -1,3 +1,5 @@
-<body class="flex flex-col justify-center items-center dark:bg-primary-700">
+<main
+  class="flex flex-col justify-center items-center bg-teal-50 dark:bg-teal-700"
+>
   <slot />
-</body>
+</main>

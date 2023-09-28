@@ -35,10 +35,10 @@
 </script>
 
 <div
-  class="relative antialiased font-serif min-h-screen min-h-screen-ios bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 {$settingsState.darkMode
+  class="relative antialiased font-serif min-h-screen bg-teal-50 dark:bg-teal-900 text-teal-900 dark:text-teal-50 {$settingsState.darkMode
     ? 'dark'
     : 'light'}"
-  style="overflow:hidden;"
+  style="display: contents; overflow:hidden;"
 >
   <TolgeeProvider {tolgee}>
     <slot />

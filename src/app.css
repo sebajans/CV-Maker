@@ -12,8 +12,6 @@
     overflow-x: hidden;
     height: 100%;
     width: 100vw;
-    /* -ms-overflow-style: none;
-     scrollbar-width: none; */
    }
 
   body {
