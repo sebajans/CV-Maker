@@ -1,0 +1,205 @@
+@tailwind base;
+
+@layer base {
+
+  :root {
+    --border-color: transparent;
+    --animation-length: 0.25s;
+    --animation-delay: 0s;
+  }
+
+  html {
+    overflow-x: hidden;
+    height: 100%;
+    width: 100vw;
+    /* -ms-overflow-style: none;
+     scrollbar-width: none; */
+   }
+
+  body {
+    font-family: 'Oswald', sans-serif;
+  }
+
+  section {
+    @apply max-w-4xl my-auto mx-auto ;
+    min-height: 100vh;
+    min-height: 100svh;
+   }
+
+  h1 {
+      @apply pb-2 md:pl-0 text-3xl md:text-4xl text-left font-sans font-bold;
+  }
+
+  h2 {
+      @apply font-sans text-xl uppercase dark:text-teal-50 text-teal-900 font-bold;
+  }
+
+  h3 {
+      @apply text-lg font-sans;
+  }
+
+  p {
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+  }
+  
+  span, p {
+    @apply font-light dark:text-teal-50 text-teal-900 mb-1;
+  }
+
+  h1, h2 {
+    @apply text-teal-600 dark:text-teal-300;
+  }
+
+  p, li,  label {
+      @apply text-black dark:text-white;
+  }
+
+  ul {}
+
+  ul li {}
+
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  a:focus:not(:focus-visible) {
+		outline: none;
+	}
+
+  .cursor .typing::after {
+    vertical-align: bottom !important;
+  }
+}
+
+@tailwind components;
+
+@layer components {
+
+  .input {
+      /* @apply focus:!ring-teal-300/70 focus:outline-none transition-all focus:bg-teal-50 focus:ring-1 placeholder-teal-400 font-medium text-sm bg-teal-50/80 block w-full p-2.5 dark:bg-teal-50 dark:border-teal-600 dark:text-teal-900 text-teal-900 */
+      @apply focus:outline-none transition-all bg-transparent placeholder-teal-400 font-medium text-sm  block w-full p-2.5   dark:text-teal-50 text-teal-900 border border-transparent ;
+  }
+
+  .box:focus-within {
+    @apply outline outline-1 outline-teal-400 -outline-offset-2;
+  }
+
+
+  .label {
+      @apply block mb-2 dark:text-teal-50 font-medium text-teal-900
+  }
+}
+
+@tailwind utilities;
+
+@layer utilities {
+  .standardButton {
+		@apply items-center justify-center text-teal-900 dark:text-teal-50  dark:outline-teal-50 outline-teal-900 box-border 
+		py-2 px-4 h-auto flex outline outline-1 outline-offset-0 transition-all ease-in duration-200
+		dark:hover:from-teal-50 dark:hover:to-teal-50 
+		hover:outline-teal-900 dark:hover:outline-teal-50;
+	}
+
+  .standardButtonOld {
+		@apply items-center justify-center text-center text-teal-900 dark:text-teal-50 dark:from-teal-50/40 dark:to-teal-50/30 from-teal-900/30 to-teal-900/20 dark:border-teal-50/10 border-teal-900/10 font-light  bg-gradient-to-tr box-border 
+		py-2 px-4 h-auto md:backdrop-blur-sm flex border transition-all ease-in duration-300 rounded-none hover:from-teal-900/30 hover:to-teal-900/40
+		dark:hover:from-teal-50/20 dark:hover:to-teal-50/30 
+		hover:border-teal-900/50 dark:hover:border-teal-50/50;
+	}
+
+  @keyframes border-animation-width{
+    0%{
+      width: 0;
+      opacity:0; 
+    }
+    100%{
+      width: calc(100% - 2px);
+      opacity:1;
+    }
+  }
+
+  @keyframes border-animation-height{
+    0% {
+      height: 0;
+      opacity: 0;
+    }
+    100% {
+      height: calc(100% - 2px);
+      opacity: 1;  
+    }
+  }
+
+  .box {
+    position: relative;
+    z-index: 1;
+  }
+
+  .box:before {
+    position: absolute;
+    width: 0%;
+    height: 1px;
+    opacity:1;
+    z-index: -1;
+    content: '';
+    background: var(--border-color);
+    top: 1px;
+    left: 1px;
+    transition: 100ms width ease 300ms;
+    -web-kit-transition: 100ms width ease 300ms;
+    animation:
+    border-animation-width var(--animation-length);
+    animation-fill-mode: forwards;
+  }
+
+  .box:after {
+    position: absolute;
+    width: 1px;
+    height: 0%;
+    opacity:0;
+    z-index: -1;
+    content: '';
+    background: var(--border-color);
+    top: 1px;
+    right: 1px;
+    animation:
+    border-animation-height var(--animation-length) ease calc(var(--animation-delay) + 500ms);
+    animation-fill-mode: forwards;
+  }
+
+  .box > span:after,
+  .box > *:after {
+    position: absolute;
+    width: 0;
+    opacity:0;
+    z-index: -1;
+    height: 1px;
+    content: '';
+    background: var(--border-color);
+    bottom: 1px;
+    right: 1px;
+    transition: 100ms width ease 100ms;
+    -web-kit-transition: 100ms width ease 100ms;
+    animation:
+    border-animation-width var(--animation-length) ease calc(var(--animation-delay) + 1000ms);
+    animation-fill-mode: forwards;
+  }
+
+  .box span:before,
+  .box > *:before {
+    position: absolute;
+    width: 1px;
+    height: 0;
+    opacity:0;
+    z-index: -1;
+    content: '';
+    background: var(--border-color);
+    bottom: 1px;
+    left: 1px;
+    transition: 100ms height ease 0ms;
+    -web-kit-transition: 100ms height ease 0ms;
+    animation:
+    border-animation-height var(--animation-length) ease calc(var(--animation-delay) + 1500ms);
+    animation-fill-mode: forwards;
+  }
+}
