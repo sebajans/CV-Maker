@@ -25,30 +25,25 @@
    }
 
   h1 {
-      @apply pb-2 md:pl-0 text-3xl md:text-4xl text-left font-sans font-bold;
+      @apply pb-2 md:pl-0 text-3xl md:text-4xl text-teal-600 dark:text-teal-300 text-left font-sans font-bold;
   }
 
   h2 {
-      @apply font-sans text-xl uppercase dark:text-teal-50 text-teal-900 font-bold;
+      @apply font-sans text-xl uppercase text-teal-600 dark:text-teal-300 font-bold;
   }
 
   h3 {
-      @apply text-lg font-sans;
+      @apply text-lg font-sans dark:text-teal-50 text-teal-900;
   }
 
   p {
+    @apply dark:text-teal-50 text-teal-900;
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
   }
   
-  span, p {
-    @apply font-light dark:text-teal-50 text-teal-900 mb-1;
-  }
 
-  h1, h2 {
-    @apply text-teal-600 dark:text-teal-300;
-  }
 
   p, li,  label {
       @apply text-black dark:text-white;
@@ -73,11 +68,6 @@
 @tailwind components;
 
 @layer components {
-
-  .input {
-      /* @apply focus:!ring-teal-300/70 focus:outline-none transition-all focus:bg-teal-50 focus:ring-1 placeholder-teal-400 font-medium text-sm bg-teal-50/80 block w-full p-2.5 dark:bg-teal-50 dark:border-teal-600 dark:text-teal-900 text-teal-900 */
-      @apply focus:outline-none transition-all bg-transparent placeholder-teal-400 font-medium text-sm  block w-full p-2.5   dark:text-teal-50 text-teal-900 border border-transparent ;
-  }
 
   .box:focus-within {
     @apply outline outline-1 outline-teal-400 -outline-offset-2;

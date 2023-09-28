@@ -5,102 +5,198 @@
   import { skillItems, type SkillItems } from "$lib/lists/skillItems";
   import DarkModeButton from "$components/base/DarkModeButton.svelte";
   import LanguageSwitcher from "$components/base/LanguageSwitcher.svelte";
+  import { fade } from "svelte/transition";
+  import Grid, { GridItem, type GridController } from "svelte-grid-extended";
+  import { writable, type Writable } from "svelte/store";
+  import { printPage } from "$lib/functions/printPage";
+  import InPlaceEdit from "$components/InPlaceEdit.svelte";
+  // interface IntroItems {
+  //   fieldOfWork: string[];
+  //   name: string;
+  //   defaultValue: string;
+  // }
+  // let introtext: IntroItems[] = [
+  //   {
+  //     fieldOfWork: ["webdev"],
+  //     name: "webdev",
+  //     defaultValue:
+  //       "Hey, I'm Sebastian. I'm a front-end web developer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I started to learn web development and graphic design in my free time. I'm passionate about creating beautiful and functional websites and designs.",
+  //   },
+  //   {
+  //     fieldOfWork: ["graphicdesign"],
+  //     name: "graphicdesign",
+  //     defaultValue:
+  //       "Hey, I'm Sebastian. I'm a graphic designer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I started to learn graphic design in my free time. I'm passionate about creating beautiful designs.",
+  //   },
+  //   {
+  //     fieldOfWork: ["productdesign"],
+  //     name: "productdesign",
+  //     defaultValue:
+  //       "Hey, I'm Sebastian. I'm a product designer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I studied Design Engineering and graphic design in my free time. I'm passionate about creating beautiful designs.",
+  //   },
+  // ];
 
-  import Grid, { GridItem } from "svelte-grid-extended";
+  // let filteredCvItems = cvItems;
+  // let filteredSkillItems = skillItems;
+  // let filteredIntroText = introtext;
 
-  function printPage() {
-    const main = document.querySelector("main");
-    const body = document.querySelector("body");
-    if (main && body) {
-      main.style.width = "21cm";
-      main.style.height = "29.7cm";
-      main.style.margin = "0px !important";
-      main.style.padding = "0";
-      body.style.width = "21cm";
-      body.style.height = "29.7cm";
-      body.style.margin = "0px !important";
-      body.style.padding = "0";
-      window.print();
-      main.style.removeProperty("width");
-      main.style.removeProperty("height");
-      main.style.removeProperty("margin");
-      main.style.removeProperty("padding");
-      body.style.removeProperty("width");
-      body.style.removeProperty("height");
-      body.style.removeProperty("margin");
-      body.style.removeProperty("padding");
-    }
-  }
+  // function selectCategory(fieldOfWork: string[] = ["webdev"]) {
+  //   filteredCvItems = cvItems.filter((item) =>
+  //     item.fieldOfWork.some((field) => fieldOfWork.includes(field))
+  //   );
 
-  interface IntroItems {
-    fieldOfWork: string[];
-    name: string;
-    defaultValue: string;
-  }
-  let introtext: IntroItems[] = [
-    {
-      fieldOfWork: ["webdev"],
-      name: "webdev",
-      defaultValue:
-        "Hey, I'm Sebastian. I'm a front-end web developer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I started to learn web development and graphic design in my free time. I'm passionate about creating beautiful and functional websites and designs.",
-    },
-    {
-      fieldOfWork: ["graphicdesign"],
-      name: "graphicdesign",
-      defaultValue:
-        "Hey, I'm Sebastian. I'm a graphic designer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I started to learn graphic design in my free time. I'm passionate about creating beautiful designs.",
-    },
-    {
-      fieldOfWork: ["productdesign"],
-      name: "productdesign",
-      defaultValue:
-        "Hey, I'm Sebastian. I'm a product designer. I'm currently working as a freelancer. While studying Materials Science I realized i wanted to work in a more creative field. I studied Design Engineering and graphic design in my free time. I'm passionate about creating beautiful designs.",
-    },
-  ];
+  //   filteredIntroText = introtext.filter((item) =>
+  //     item.fieldOfWork.some((field) => fieldOfWork.includes(field))
+  //   );
 
-  let filteredCvItems = cvItems;
-  let filteredSkillItems = skillItems;
-  let filteredIntroText = introtext;
+  //   filteredSkillItems = Object.entries(skillItems).reduce(
+  //     (acc, [categoryName, skills]) => {
+  //       acc[categoryName] = {
+  //         categorydescription: skills.categorydescription,
+  //         categoryArray: skills.categoryArray.filter((skill) =>
+  //           skill.fieldOfWork.some((field) => fieldOfWork.includes(field))
+  //         ),
+  //       };
+  //       return acc;
+  //     },
+  //     {} as SkillItems
+  //   );
+  // }
 
-  function selectCategory(fieldOfWork: string[] = ["webdev"]) {
-    filteredCvItems = cvItems.filter((item) =>
-      item.fieldOfWork.some((field) => fieldOfWork.includes(field))
-    );
-
-    filteredIntroText = introtext.filter((item) =>
-      item.fieldOfWork.some((field) => fieldOfWork.includes(field))
-    );
-
-    filteredSkillItems = Object.entries(skillItems).reduce(
-      (acc, [categoryName, skills]) => {
-        acc[categoryName] = {
-          categorydescription: skills.categorydescription,
-          categoryArray: skills.categoryArray.filter((skill) =>
-            skill.fieldOfWork.some((field) => fieldOfWork.includes(field))
-          ),
-        };
-        return acc;
-      },
-      {} as SkillItems
-    );
-  }
-
-  $: console.log(filteredIntroText);
+  // $: console.log(filteredIntroText);
 
   const { t } = getTranslate();
 
-  const itemSize = { height: 40 };
-  const items = [
-    { id: "0", x: 0, y: 0, w: 2, h: 5 },
-    { id: "1", x: 2, y: 2, w: 2, h: 2 },
-    { id: "2", x: 2, y: 0, w: 1, h: 2 },
-    { id: "3", x: 3, y: 0, w: 2, h: 2 },
-    { id: "4", x: 3, y: 8, w: 1, h: 3 },
-    { id: "5", x: 2, y: 0, w: 2, h: 8 },
-    { id: "6", x: 2, y: 5, w: 1, h: 1 },
-    { id: "7", x: 2, y: 6, w: 3, h: 2 },
-    { id: "8", x: 2, y: 4, w: 2, h: 2 },
-  ];
+  // Define the type for items
+  interface ItemType {
+    id: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    type: string;
+    content: {
+      h2: string;
+      h3: string;
+      table?: {
+        rowsAmount?: number;
+      };
+      text: string[];
+    };
+    isEditing?: boolean; // Add isEditing property
+  }
+
+  // Create a writable store for items
+  const itemsStore: Writable<ItemType[]> = writable([
+    {
+      id: crypto.randomUUID(),
+      x: 0,
+      y: 0,
+      w: 6,
+      h: 3,
+      type: "text",
+      content: {
+        h2: "Introduction",
+        h3: "",
+        text: [],
+        table: {
+          rowsAmount: 1,
+        },
+      },
+    },
+    {
+      id: crypto.randomUUID(),
+      x: 0,
+      y: 7,
+      w: 6,
+      h: 4,
+      type: "table",
+      content: {
+        h2: "Education",
+        h3: "Degree in Materials Science",
+        table: {
+          rowsAmount: 1,
+        },
+        text: [],
+      },
+    },
+    {
+      id: crypto.randomUUID(),
+      x: 0,
+      y: 3,
+      w: 6,
+      h: 4,
+      type: "table",
+      content: {
+        h2: "Work Experience",
+        h3: "Front-end Developer",
+        table: {
+          rowsAmount: 1,
+        },
+        text: [],
+      },
+    },
+    {
+      id: crypto.randomUUID(),
+      x: 0,
+      y: 11,
+      w: 6,
+      h: 4,
+      type: "list",
+      content: {
+        h2: "Certificates",
+        h3: "Web Development Certificate",
+        table: {
+          rowsAmount: 1,
+        },
+        text: [],
+      },
+    },
+    // Add more default items as needed
+  ]);
+
+  let items: ItemType[];
+
+  // Subscribe to changes in the store
+  itemsStore.subscribe((value) => {
+    items = value;
+  });
+
+  let gridController: GridController;
+
+  function addNewItem() {
+    const w = Math.floor(Math.random() * 2) + 1;
+    const h = Math.floor(Math.random() * 5) + 1;
+    const newPosition = gridController.getFirstAvailablePosition(w, h);
+    const newItemId = crypto.randomUUID();
+
+    const newItem: ItemType = {
+      id: newItemId,
+      x: newPosition ? newPosition.x : 0,
+      y: newPosition ? newPosition.y : 0,
+      w,
+      h,
+      type: "text",
+      content: {
+        h2: "New Title",
+        h3: "Subtitle",
+        text: [],
+      },
+    };
+
+    itemsStore.update((currentItems) => [...currentItems, newItem]);
+  }
+
+  const itemSize = { height: 50 };
+
+  $: console.log(items);
+
+  function submit(field: string) {
+    return ({ detail: newValue }: { detail: string }) => {
+      // IRL: POST value to server here
+      console.log(`updated ${field}, new value is: "${newValue}"`);
+    };
+  }
 </script>
 
 <div class="hide-on-print absolute inset-y-0 left-0 pt-4 px-4 flex">
@@ -112,20 +208,8 @@
       <DarkModeButton />
     </div>
     <div id="add-items" class=" flex flex-col">
+      <button on:click={addNewItem}>Add New Item</button>
       <span class="mx-2 dark:text-teal-50">Categories:</span>
-      <button class="btn btn-navajo" on:click={() => selectCategory(["webdev"])}
-        >Web dev</button
-      >
-      <button
-        class="btn btn-navajo"
-        on:click={() => selectCategory(["graphicdesign"])}
-        >Graphic design</button
-      >
-      <button
-        class="btn btn-navajo"
-        on:click={() => selectCategory(["productdesign"])}
-        >Product design</button
-      >
     </div>
     <button class="btn btn-navajo" on:click={printPage}>print page</button>
   </div>
@@ -135,17 +219,85 @@
     id="page-1"
     class="!h-[29.7cm] p-[2cm] outline-1 outline outline-offset-1 !w-[21cm] flex justify-center bg-teal-50 dark:bg-teal-900"
   >
-    <Grid {itemSize} gap={10} cols={8} class="" collision="push">
-      {#each items as item}
-        <GridItem
-          class="bg-slate-200 print-this"
-          x={item.x}
-          y={item.y}
-          w={item.w}
-          h={item.h}
-        >
-          <div class="item">{item.id}</div>
-        </GridItem>
+    <Grid
+      {itemSize}
+      cols={10}
+      gap={10}
+      class=""
+      collision="push"
+      bind:controller={gridController}
+    >
+      {#each items as item, id}
+        <!-- {#if item.type === "table"}
+          <div transition:fade={{ duration: 300 }}>
+            <GridItem
+              class="flex bg-slate-100/30"
+              id={id.toString()}
+              bind:x={item.x}
+              bind:y={item.y}
+              bind:w={item.w}
+              bind:h={item.h}
+            >
+              <div>
+                <h1>{item.content.h2}</h1>
+                <h3>{item.content.h3}</h3>
+              </div>
+            </GridItem>
+          </div>
+        {:else if item.type === "list"}
+          <div transition:fade={{ duration: 300 }}>
+            <GridItem
+              class="flex bg-slate-100/30"
+              id={id.toString()}
+              bind:x={item.x}
+              bind:y={item.y}
+              bind:w={item.w}
+              bind:h={item.h}
+            >
+              <div>
+                <h1>{item.content.h2}</h1>
+                <h3>{item.content.h3}</h3>
+              </div>
+            </GridItem>
+          </div>
+        {:else if item.type === "text"} -->
+        <div transition:fade={{ duration: 300 }}>
+          <GridItem
+            class="flex p-1 space-y-2  bg-slate-100/10"
+            id={id.toString()}
+            bind:x={item.x}
+            bind:y={item.y}
+            bind:w={item.w}
+            bind:h={item.h}
+          >
+            <div class={item.type}>
+              <!-- <span>{item.type}</span> -->
+              <!-- <h1>{item.content.h2}</h1> -->
+              <h2>
+                <InPlaceEdit
+                  bind:value={item.content.h2}
+                  on:submit={submit("title")}
+                />
+              </h2>
+              <!-- {item.content.h3
+                ? "h-auto bg-teal-400"
+                : "h-px bg-red-400 hover:h-auto"} -->
+              <h3>
+                <InPlaceEdit
+                  bind:value={item.content.h3}
+                  on:submit={submit("title")}
+                />
+                <!-- {item.content.h3 === undefined ? "" : item.content.h3} -->
+              </h3>
+              {#each item.content.text as text}
+                <p>
+                  <InPlaceEdit bind:value={text} on:submit={submit("title")} />
+                </p>
+              {/each}
+            </div>
+          </GridItem>
+        </div>
+        <!-- {/if} -->
       {/each}
     </Grid>
     <!-- <div
@@ -320,7 +472,7 @@
       </div>
     </div> -->
   </div>
-  <div
+  <!-- <div
     id="page-2"
     class="!h-[29.7cm] p-[2cm] outline-1 outline outline-offset-1 !w-[21cm] flex justify-center bg-teal-50 dark:bg-teal-900"
   >
@@ -418,7 +570,7 @@
         {/each}
       </div>
     </div>
-  </div>
+  </div> -->
 </page>
 
 <style>
@@ -428,7 +580,7 @@
   }
 
   h2 {
-    @apply text-teal-600 font-sans uppercase font-medium tracking-wider text-[1.375em] pb-1.5 pt-2;
+    @apply text-teal-600 font-sans uppercase font-medium;
   }
 
   @page {
