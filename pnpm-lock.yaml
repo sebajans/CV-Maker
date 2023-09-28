@@ -8,6 +8,9 @@ dependencies:
   '@sveltejs/adapter-netlify':
     specifier: ^2.0.8
     version: 2.0.8(@sveltejs/kit@1.25.1)
+  '@tolgee/svelte':
+    specifier: ^5.12.0
+    version: 5.12.0(svelte@4.2.1)
 
 devDependencies:
   '@sveltejs/adapter-auto':
@@ -450,6 +453,25 @@ packages:
       vitefu: 0.2.4(vite@4.4.9)
     transitivePeerDependencies:
       - supports-color
+
+  /@tolgee/core@5.12.0:
+    resolution: {integrity: sha512-vVLHT6MpQQIRDDvqfPIV0MsRrhZuczCnxUPvmwImUFMVm6txQvV+e8/bC3iKXqT2j5TzQj6Oxt//xK+sHt0igg==}
+    dev: false
+
+  /@tolgee/svelte@5.12.0(svelte@4.2.1):
+    resolution: {integrity: sha512-GZ8mvruhsPzFX5ptc2K3B95uzgBC+fi5yh5jTlfpxtPuBfmgsPg5MPkkdf057tp1NSPStV3mg0POJbae1pj6Ug==}
+    peerDependencies:
+      svelte: ^3.29.0 || ^4.0.0
+    dependencies:
+      '@tolgee/web': 5.12.0
+      svelte: 4.2.1
+    dev: false
+
+  /@tolgee/web@5.12.0:
+    resolution: {integrity: sha512-SzCZqnG8W2/kTy5ArGCpvbM/fxBn90lZJV/Pchlv/VYorAOFUtUyWUoNDP++LgRKDri02+QorT22wWuV8cyY7A==}
+    dependencies:
+      '@tolgee/core': 5.12.0
+    dev: false
 
   /@types/cookie@0.5.2:
     resolution: {integrity: sha512-DBpRoJGKJZn7RY92dPrgoMew8xCWc2P71beqsjyhEI/Ds9mOyVmBwtekyfhpwFIVt1WrxTonFifiOZ62V8CnNA==}
