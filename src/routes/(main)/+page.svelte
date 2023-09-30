@@ -1,5 +1,7 @@
 <script lang="ts">
-  import Grid from "svelte-grid-extended";
+  import Grid, { GridItem } from "svelte-grid-extended";
+
+  const itemSize = { height: 40 };
 </script>
 
 <div
@@ -27,7 +29,16 @@
     <div
       class="max-w-3xl w-full h-full mx-auto shadow-lg bg-white p-[min(10%,_5rem)] rounded-t-2xl"
     >
-      <!-- <Grid></Grid> -->
+      <Grid {itemSize} cols={10} rows={10}>
+        <GridItem
+          activeClass="grid-item-active"
+          previewClass="bg-green-500 rounded"
+          x={1}
+          y={0}
+          class="item">Hey</GridItem
+        >
+        <GridItem x={3} y={3} w={4} class="item">Hoy</GridItem>
+      </Grid>
     </div>
   </div>
   <div
@@ -38,3 +49,12 @@
 <div class="w-full bg-white min-h-screen">
   <div class="w-full max-w-3xl">This is another section</div>
 </div>
+
+<style>
+  .preview {
+    background-color: red;
+  }
+  :global(.grid-item-active) {
+    opacity: 0.1;
+  }
+</style>

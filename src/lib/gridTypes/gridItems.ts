@@ -73,10 +73,11 @@ export const itemsStore: Writable<ItemType[]> = writable([
       h3: "Front-end Developer",
       data: [
         {
-          title: "University of California",
-          description: "Berkeley, CA",
+          agency: "University of California",
+          location: "Berkeley, CA",
           position: "B.S. Materials Science and Engineering",
           date: "2016 - 2020",
+          description: "Test",
         },
       ],
     },

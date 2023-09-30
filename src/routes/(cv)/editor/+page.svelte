@@ -4,11 +4,13 @@
   import DarkModeButton from "$components/base/DarkModeButton.svelte";
   import LanguageSwitcher from "$components/base/LanguageSwitcher.svelte";
   import { fade } from "svelte/transition";
-  import Grid, { type GridController } from "svelte-grid-extended";
+  import Grid, { GridItem, type GridController } from "svelte-grid-extended";
   import { printPage } from "$lib/functions/printPage";
   import InPlaceEdit from "$components/InPlaceEdit.svelte";
   import { itemsStore, type ItemType } from "$lib/gridTypes/gridItems";
   import GridTypeItem from "$components/gridItems/GridTypeItem.svelte";
+
+  import Icon from "@iconify/svelte";
 
   const { t } = getTranslate();
 
@@ -21,7 +23,7 @@
 
   let gridController: GridController;
 
-  let selectedType: string = "text"; // Default type
+  let selectedType: string = ""; // Default type
 
   function addNewItem(typeToUse: string = selectedType) {
     const w = Math.floor(Math.random() * 2) + 1;
@@ -142,49 +144,65 @@
   ];
 </script>
 
-<div class="hide-on-print fixed inset-y-0 left-0 pt-4 px-4 flex">
+<div class="hide-on-print fixed bottom-0 left-0 pt-4 px-4 flex">
   <div
-    class="flex flex-col justify-between items-center space-y-6 border border-teal-600/30 shadow-md mb-4 z-50 w-40 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md p-2"
+    class="flex flex-col justify-between items-center space-y-6 border border-teal-600/30 shadow-md mb-4 z-50 w-40 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
   >
-    <div class="flex flex-row space-x-2">
-      <LanguageSwitcher />
-      <DarkModeButton />
-    </div>
     <div id="add-items" class="w-full flex flex-col">
-      <label for="item-type">Select Type:</label>
-      <select bind:value={selectedType} id="item-type">
-        {#each differentTypes as type}
-          <option value={type.type}>{type.title}</option>
-        {/each}
-      </select>
-      <button class="standardButton" on:click={() => addNewItem(selectedType)}
-        >Add New Item</button
-      >
-      <span class="mx-2 dark:text-teal-50">Categories:</span>
+      <label class="p-2" for="item-type">Add item:</label>
+      <div class="w- flex">
+        <select class="w-3/4" bind:value={selectedType} id="item-type">
+          <option value="" selected hidden>Select type</option>
+          {#each differentTypes as type}
+            <option value={type.type}>{type.title}</option>
+          {/each}
+        </select>
+        <button
+          class="bg-slate-400 p-1 flex flex-row"
+          on:click={() => addNewItem(selectedType)}
+        >
+          <Icon class="h-6 w-6" color="black" icon="ic:round-add" />
+          <!-- <span class="text-start">Add</span> -->
+        </button>
+      </div>
     </div>
+    <span class="mx-2 dark:text-teal-50">Categories:</span>
     <button class="btn btn-navajo" on:click={printPage}>print page</button>
   </div>
 </div>
-
-<page class="section-to-print space-y-10">
-  <div
-    id="page-1"
-    class="!h-[29.7cm] p-[2cm] outline-1 outline outline-offset-1 !w-[21cm] flex justify-center bg-teal-50 dark:bg-teal-900"
-  >
-    <Grid
-      rows={20}
-      cols={10}
-      gap={8}
-      class="w-full h-full"
-      collision="none"
-      bind:controller={gridController}
+<div class="py-20">
+  <page class="section-to-print space-y-10">
+    <div
+      id="page-1"
+      class="!h-[29.7cm] p-[2cm] outline-1 outline outline-offset-1 !w-[21cm] flex justify-center bg-white dark:bg-black rounded-md"
     >
-      {#each items as item, id}
-        <GridTypeItem {item} />
-      {/each}
-    </Grid>
-  </div>
-</page>
+      <Grid
+        rows={20}
+        cols={10}
+        gap={8}
+        class="w-full h-full grid-container z-10"
+        bind:controller={gridController}
+      >
+        <!-- {#each items as item}
+        <GridItem
+          id={item.id.toString()}
+          x={item.x}
+          y={item.y}
+          w={item.w}
+          h={item.h}
+          class="bg-white grid-item"
+          previewClass="preview"
+        >
+          <div class="item">{item.id}</div>
+        </GridItem>
+      {/each} -->
+        {#each items as item, id}
+          <GridTypeItem {item} />
+        {/each}
+      </Grid>
+    </div>
+  </page>
+</div>
 
 <style>
   * {

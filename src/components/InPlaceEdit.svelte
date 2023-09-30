@@ -32,7 +32,7 @@
     }
   }
 
-  function focus(element: HTMLInputElement) {
+  function focus(element: HTMLTextAreaElement) {
     element.focus();
   }
 </script>
@@ -43,8 +43,8 @@
     on:submit|preventDefault={submit}
     on:keydown={keydown}
   >
-    <input
-      class="text-inherit p- 1 w-full focus:rou nded-md focus:outline-none focus:bg-t eal-900"
+    <textarea
+      class="text-inherit h-full p- 1 w-full focus:rou nded-md focus:outline-none focus:bg-t eal-900"
       bind:value
       on:blur={submit}
       {required}
@@ -58,7 +58,7 @@
 {/if}
 
 <style>
-  input {
+  textarea {
     border: none;
     background: none;
     font-size: inherit;
@@ -68,8 +68,9 @@
     font-weight: inherit;
     text-align: inherit;
     box-shadow: none;
+    resize: none; /* optional: disable textarea resizing */
   }
-  input:focus:after {
+  textarea:focus:after {
     content: "";
     position: absolute;
     left: -2px;
