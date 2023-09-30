@@ -52,7 +52,10 @@
     />
   </form>
 {:else}
-  <span class="hover:cursor-text text-inherit w-full p -1" on:click={edit}>
+  <span
+    class="relative hover:cursor-text hoverItem text-inherit w-full p -1"
+    on:click={edit}
+  >
     {value}
   </span>
 {/if}

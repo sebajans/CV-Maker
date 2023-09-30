@@ -16,7 +16,7 @@
   function addNewEntry() {
     if (item.type.includes("data")) {
       const newDataItem: DataItem = {
-        agency: "Agency",
+        institution: "Institution",
         description: "New Description",
         position: "New Position",
         date: "New Date",
@@ -47,6 +47,7 @@
     }
   }
   let hovering = false;
+  let openSubMenu = false;
 
   function moveStart() {
     document.body.classList.add("disable-selection");
@@ -58,7 +59,7 @@
 </script>
 
 <GridItem
-  class="grid-item hover:bg-black-900/10 rounded-md hover:dark:bg-slate-100/10"
+  class="grid-item hover:bg-black/10 transition-colors rounded-md  hover:dark:bg-slate-100/10"
   id={item.id.toString()}
   bind:x={item.x}
   bind:y={item.y}
@@ -79,7 +80,11 @@
   >
     <!-- transition:fade={{ duration: 300 }} -->
     {#if item.type === "image" && item.content.imgUrl !== undefined}
-      <img src="url" alt="altTag" />
+      <img
+        class="pointer-events-none select-none w-full h-full rounded-full aspect-square object-cover"
+        src={item.content.imgUrl}
+        alt="altTag"
+      />
     {/if}
     {#if (item.type === "dataWithHeader" || item.type === "textWithHeader" || item.type === "listWithHeader" || item.type === "textWithHeaderAndSubHeader" || item.type === "dataWithHeaderAndSubHeader" || item.type === "listWithHeaderAndSubHeader") && item.content.h2 !== undefined}
       <h2>
@@ -94,18 +99,24 @@
         />
       </h3>
     {/if}
-    <div class="w-full h-full">
+    <div
+      role="cell"
+      tabindex="0"
+      on:mouseenter={() => (openSubMenu = true)}
+      on:mouseleave={() => (openSubMenu = false)}
+      class="w-full h-full"
+    >
       {#if (item.type === "text" || item.type === "textWithHeader" || item.type === "textWithHeaderAndSubHeader") && Array.isArray(item.content.text)}
         {#each item.content.text as text}
-          <p>
+          <p class="hoverItem">
             <InPlaceEdit bind:value={text} on:submit={submit("text")} />
           </p>
         {/each}
       {/if}
       {#if (item.type === "list" || item.type === "listWithHeader" || item.type === "listWithHeaderAndSubHeader") && Array.isArray(item.content.list)}
-        <ul>
+        <ul class="list-inside">
           {#each item.content.list as listItem}
-            <li>
+            <li class=" list-disc">
               <InPlaceEdit
                 bind:value={listItem}
                 on:submit={submit("listItem")}
@@ -118,7 +129,7 @@
         <div class="flex flex-row flex-wrap w-full">
           {#each item.content.data as dataItem}
             {#if dataItem.position !== undefined}
-              <h4 class="w-3/4">
+              <h4 class="w-3/4 font-medium">
                 <InPlaceEdit
                   bind:value={dataItem.position}
                   on:submit={submit("data-position")}
@@ -126,31 +137,31 @@
               </h4>
             {/if}
             {#if dataItem.date !== undefined}
-              <div class="w-1/4">
+              <div class="w-1/4 text-right text-sm">
                 <InPlaceEdit
                   bind:value={dataItem.date}
                   on:submit={submit("data-date")}
                 />
               </div>
             {/if}
-            {#if dataItem.agency !== undefined}
-              <h3 class="w-3/4">
+            {#if dataItem.institution !== undefined}
+              <h3 class="w-3/4 text-sm">
                 <InPlaceEdit
-                  bind:value={dataItem.agency}
-                  on:submit={submit("data-agency")}
+                  bind:value={dataItem.institution}
+                  on:submit={submit("data-institution")}
                 />
               </h3>
             {/if}
             {#if dataItem.location !== undefined}
-              <div class="w-1/4">
+              <div class="w-1/4 text-right text-sm">
                 <InPlaceEdit
                   bind:value={dataItem.location}
-                  on:submit={submit("data-date")}
+                  on:submit={submit("data-location")}
                 />
               </div>
             {/if}
             {#if dataItem.description !== undefined}
-              <p class="w-full">
+              <p class="w-full text-base font-sans">
                 <InPlaceEdit
                   bind:value={dataItem.description}
                   on:submit={submit("data-description")}
@@ -160,7 +171,7 @@
           {/each}
         </div>
       {/if}
-      {#if hovering}
+      {#if openSubMenu}
         <button
           class="bg-black/20 hover:bg-slate-100 rounded-full w-5 h-5 flex justify-center items-center"
           on:click={addNewEntry}
@@ -171,26 +182,78 @@
     </div>
   </div>
   <div
+    role="cell"
+    tabindex="0"
+    on:mouseenter={() => (hovering = true)}
+    on:mouseleave={() => (hovering = false)}
     class="absolute top-0 left-1/2 -translate-x-1/2"
     slot="moveHandle"
     let:moveStart
   >
-    <!-- {#if hovering} -->
-    <div class=" rounded text-white cursor-move" on:pointerdown={moveStart}>
-      <Icon
-        class="h-4 w-4"
-        color="grey"
-        icon="teenyicons:drag-horizontal-solid"
-      />
-    </div>
-    <!-- {/if} -->
+    {#if hovering}
+      <div class=" text-white cursor-move" on:pointerdown={moveStart}>
+        <Icon
+          class="h-5 w-5 text-black/50 hover:text-black"
+          icon="mdi:drag-horizontal"
+        />
+      </div>
+    {/if}
   </div>
+  <div
+    role="cell"
+    tabindex="0"
+    on:mouseenter={() => (hovering = true)}
+    on:mouseleave={() => (hovering = false)}
+    class="absolute bottom-1 right-1"
+    slot="resizeHandle"
+    let:resizeStart
+  >
+    {#if hovering}
+      <div class="cursor-move" on:pointerdown={resizeStart}>
+        <Icon
+          class="h-5 w-5 text-black/50 hover:text-black"
+          icon="mdi:resize-bottom-right"
+        />
+      </div>
+    {/if}
+  </div>
+  <button
+    on:mouseenter={() => (hovering = true)}
+    on:mouseleave={() => (hovering = false)}
+    on:click={() => console.log("options")}
+    class="{hovering ? 'opacity-100' : 'opacity-0'} absolute top-1 right-1"
+  >
+    <Icon
+      class="h-5 w-5 text-black/50 transition-colors hover:text-black"
+      icon="iconamoon:options-fill"
+    />
+  </button>
 </GridItem>
 
 <style>
-  :global(.preview) {
+  .hoverItem {
+    position: relative;
+  }
+  .hoverItem:after {
+    /* z-index: -1; */
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    border-radius: inherit;
+    background: transparent;
+    @apply select-none pointer-events-none;
+  }
+  .hoverItem:after:hover {
+    background: #000;
+    z-index: 1;
+  }
+
+  /* :global(.preview) {
     background-color: black;
     opacity: 0.3;
     transition: all 0.15s ease-in-out;
-  }
+  } */
 </style>

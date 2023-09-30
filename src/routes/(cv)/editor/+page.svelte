@@ -9,6 +9,7 @@
   import InPlaceEdit from "$components/InPlaceEdit.svelte";
   import { itemsStore, type ItemType } from "$lib/gridTypes/gridItems";
   import GridTypeItem from "$components/gridItems/GridTypeItem.svelte";
+  // import * as html2pdf from 'html2pdf.js';
 
   import Icon from "@iconify/svelte";
 
@@ -26,8 +27,8 @@
   let selectedType: string = ""; // Default type
 
   function addNewItem(typeToUse: string = selectedType) {
-    const w = Math.floor(Math.random() * 2) + 1;
-    const h = Math.floor(Math.random() * 5) + 1;
+    const w = 3;
+    const h = 5;
     const newPosition = gridController.getFirstAvailablePosition(w, h);
     const newItemId = crypto.randomUUID();
 
@@ -77,7 +78,7 @@
                   description: "Description",
                   position: "Position",
                   date: "Date",
-                  agency: "Agency",
+                  institution: "Institution",
                 },
               ]
             : undefined,
@@ -86,19 +87,6 @@
 
     itemsStore.update((currentItems) => [...currentItems, newItem]);
   }
-
-  $: console.log($itemsStore);
-  $: console.log(items);
-
-  // const itemSize = { height: 50 };
-
-  // $: console.log(items);
-
-  // function submit(field: string) {
-  //   return ({ detail: newValue }: { detail: string }) => {
-  //     console.log(`updated ${field}, new value is: "${newValue}"`);
-  //   };
-  // }
 
   const differentTypes = [
     {
@@ -146,36 +134,61 @@
 
 <div class="hide-on-print fixed bottom-0 left-0 pt-4 px-4 flex">
   <div
-    class="flex flex-col justify-between items-center space-y-6 border border-teal-600/30 shadow-md mb-4 z-50 w-40 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
+    class="flex overflow-hidden p-1 flex-col justify-between items-center space-y-6 border shadow-md mb-4 z-50 w-52 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
   >
-    <div id="add-items" class="w-full flex flex-col">
+    <div class=" w-full flex flex-col">
       <label class="p-2" for="item-type">Add item:</label>
-      <div class="w- flex">
-        <select class="w-3/4" bind:value={selectedType} id="item-type">
-          <option value="" selected hidden>Select type</option>
-          {#each differentTypes as type}
-            <option value={type.type}>{type.title}</option>
-          {/each}
-        </select>
+      <div class="flex flex-row space-x-1">
+        <div class="select">
+          <select class=" w-full" bind:value={selectedType} id="item-type">
+            <option value="" selected hidden>Select type</option>
+            {#each differentTypes as type}
+              <option value={type.type}>{type.title}</option>
+            {/each}
+          </select>
+          <span class="focus" />
+        </div>
         <button
-          class="bg-slate-400 p-1 flex flex-row"
+          class="bg-white p-1 hover:bg-slate-200 transition-all rounded-md flex flex-row"
           on:click={() => addNewItem(selectedType)}
         >
-          <Icon class="h-6 w-6" color="black" icon="ic:round-add" />
-          <!-- <span class="text-start">Add</span> -->
+          <Icon class="h-6 w-6 self-center" color="black" icon="ic:round-add" />
         </button>
       </div>
     </div>
-    <span class="mx-2 dark:text-teal-50">Categories:</span>
-    <button class="btn btn-navajo" on:click={printPage}>print page</button>
+
+    <div class="w-full flex space-x-1">
+      <button
+        class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-center space-x-1 w-full h-10 rounded-md"
+        on:click={printPage}
+      >
+        <Icon class="h-5 w-5" color="black" icon="ic:round-print" />
+        <span class="font-sans text-black"> Print </span>
+      </button>
+      <!-- <span class="w-1 h-full" /> -->
+      <button
+        class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-center space-x-1 w-full h-10 rounded-md"
+        on:click={printPage}
+      >
+        <Icon class="h-5 w-5" color="black" icon="material-symbols:download" />
+        <span class="font-sans text-black"> Export </span>
+      </button>
+    </div>
   </div>
 </div>
+
 <div class="py-20">
   <page class="section-to-print space-y-10">
     <div
       id="page-1"
-      class="!h-[29.7cm] p-[2cm] outline-1 outline outline-offset-1 !w-[21cm] flex justify-center bg-white dark:bg-black rounded-md"
+      class="!h-[29.7cm] p-[2cm] outline-1 shadow-xl !w-[21cm] flex flex-col justify-center bg-white dark:bg-black rounded-md"
     >
+      <div class="w-full">
+        <h1 class="text-black dark:text-white">
+          <!-- <InPlaceEdit bind:value={"CV"} on:submit={submit("Title")} /> -->
+          CV - Dow Jones
+        </h1>
+      </div>
       <Grid
         rows={20}
         cols={10}
@@ -183,19 +196,6 @@
         class="w-full h-full grid-container z-10"
         bind:controller={gridController}
       >
-        <!-- {#each items as item}
-        <GridItem
-          id={item.id.toString()}
-          x={item.x}
-          y={item.y}
-          w={item.w}
-          h={item.h}
-          class="bg-white grid-item"
-          previewClass="preview"
-        >
-          <div class="item">{item.id}</div>
-        </GridItem>
-      {/each} -->
         {#each items as item, id}
           <GridTypeItem {item} />
         {/each}
@@ -205,13 +205,79 @@
 </div>
 
 <style>
+  :root {
+    --select-border: #777;
+    --select-focus: blue;
+    --select-arrow: var(--select-border);
+  }
+
   * {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
   }
 
-  h2 {
-    @apply text-teal-600 font-sans uppercase font-medium;
+  select {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    @apply text-sm rounded-md h-8 font-sans;
+    z-index: 1;
+    &::-ms-expand {
+      display: none;
+    }
+    outline: none;
+  }
+
+  .select {
+    display: grid;
+    grid-template-areas: "select";
+    align-items: center;
+    position: relative;
+
+    &::after {
+      grid-area: select;
+    }
+
+    /* min-width: 15ch; */
+    max-width: 30ch;
+
+    border: 0px solid var(--select-border);
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1.1;
+
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+
+    &::after {
+      position: absolute;
+      content: "";
+      justify-self: end;
+      width: 0.5em;
+      height: 0.3em;
+      background-color: var(--select-arrow);
+      clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    }
+  }
+
+  select:focus + .focus {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border: 2px solid var(--select-focus);
+    border-radius: inherit;
   }
 
   @page {

@@ -2,6 +2,12 @@
 
 @layer base {
 
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   :root {
     --border-color: transparent;
     --animation-length: 0.25s;

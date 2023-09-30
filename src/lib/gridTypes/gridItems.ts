@@ -1,7 +1,7 @@
 import { writable, type Writable } from "svelte/store";
 
 export interface DataItem {
-  agency?: string;
+  institution?: string;
   description?: string;
   position?: string;
   date?: string;
@@ -31,7 +31,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
     id: crypto.randomUUID(),
     x: 0,
     y: 0,
-    w: 6,
+    w: 7,
     h: 3,
     type: "textWithHeader",
     content: {
@@ -42,9 +42,20 @@ export const itemsStore: Writable<ItemType[]> = writable([
   },
   {
     id: crypto.randomUUID(),
+    x: 7,
+    y: 0,
+    w: 3,
+    h: 4,
+    type: "image",
+    content: {
+      imgUrl: "profile-pic.webp",
+    },
+  },
+  {
+    id: crypto.randomUUID(),
     x: 0,
     y: 7,
-    w: 6,
+    w: 7,
     h: 4,
     type: "dataWithHeaderAndSubHeader",
     content: {
@@ -52,7 +63,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
       h3: "Degree in Materials Science",
       data: [
         {
-          agency: "University of California",
+          institution: "University of California",
           location: "Berkeley, CA",
           position: "B.S. Materials Science and Engineering",
           date: "2016 - 2020",
@@ -65,7 +76,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
     id: crypto.randomUUID(),
     x: 0,
     y: 3,
-    w: 6,
+    w: 7,
     h: 4,
     type: "dataWithHeaderAndSubHeader",
     content: {
@@ -73,7 +84,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
       h3: "Front-end Developer",
       data: [
         {
-          agency: "University of California",
+          institution: "University of California",
           location: "Berkeley, CA",
           position: "B.S. Materials Science and Engineering",
           date: "2016 - 2020",
