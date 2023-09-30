@@ -4,7 +4,7 @@
 
 <button
   aria-label="DarkModeToggle"
-  class="p-2 h-10 w-10 overflow-hidden outline outline-none -outline-offset-1 hover:outline-1 hover:outline-teal-700 dark:hover:outline-teal-300 duration-300 transition-all font-sans relative border-2 border-transparent hover:border-teal-700 dark:hover:border-teal-300 text-teal-900 dark:text-teal-50"
+  class="p-2 h-10 w-10 overflow-hidden duration-300 transition-all font-sans relative text-white hover:text-yellow-300 dark:text-teal-50"
   on:click={toggleDarkMode}
 >
   <div

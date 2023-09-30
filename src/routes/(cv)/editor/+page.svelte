@@ -41,16 +41,16 @@
         h2:
           selectedType === "listWithHeader" ||
           selectedType === "textWithHeader" ||
-          selectedType === "tableWithHeader" ||
+          selectedType === "dataWithHeader" ||
           selectedType === "listWithHeaderAndSubHeader" ||
           selectedType === "textWithHeaderAndSubHeader" ||
-          selectedType === "tableWithHeaderAndSubHeader"
+          selectedType === "dataWithHeaderAndSubHeader"
             ? "New Title"
             : undefined,
         h3:
           selectedType === "listWithHeaderAndSubHeader" ||
           selectedType === "textWithHeaderAndSubHeader" ||
-          selectedType === "tableWithHeaderAndSubHeader"
+          selectedType === "dataWithHeaderAndSubHeader"
             ? "Subtitle"
             : undefined,
         text:
@@ -64,6 +64,20 @@
           selectedType === "listWithHeader" ||
           selectedType === "listWithHeaderAndSubHeader"
             ? ["Hello"]
+            : undefined,
+        data:
+          selectedType === "data" ||
+          selectedType === "dataWithHeader" ||
+          selectedType === "dataWithHeaderAndSubHeader"
+            ? [
+                {
+                  location: "Location",
+                  description: "Description",
+                  position: "Position",
+                  date: "Date",
+                  agency: "Agency",
+                },
+              ]
             : undefined,
       },
     };
@@ -98,16 +112,16 @@
       title: "Heading + Subheading + Text",
     },
     {
-      type: "table",
-      title: "Table",
+      type: "data",
+      title: "Data",
     },
     {
-      type: "tableWithHeader",
-      title: "Table + Header",
+      type: "dataWithHeader",
+      title: "Data + Header",
     },
     {
-      type: "tableWithHeaderAndSubHeader",
-      title: "Table + Header + Subheader",
+      type: "dataWithHeaderAndSubHeader",
+      title: "Data + Header + Subheader",
     },
     {
       type: "list",
@@ -136,14 +150,16 @@
       <LanguageSwitcher />
       <DarkModeButton />
     </div>
-    <div id="add-items" class=" flex flex-col">
+    <div id="add-items" class="w-full flex flex-col">
       <label for="item-type">Select Type:</label>
       <select bind:value={selectedType} id="item-type">
         {#each differentTypes as type}
           <option value={type.type}>{type.title}</option>
         {/each}
       </select>
-      <button on:click={() => addNewItem(selectedType)}>Add New Item</button>
+      <button class="standardButton" on:click={() => addNewItem(selectedType)}
+        >Add New Item</button
+      >
       <span class="mx-2 dark:text-teal-50">Categories:</span>
     </div>
     <button class="btn btn-navajo" on:click={printPage}>print page</button>

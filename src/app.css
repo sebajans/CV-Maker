@@ -25,11 +25,11 @@
    }
 
   h1 {
-      @apply pb-2 md:pl-0 text-3xl md:text-4xl text-teal-600 dark:text-teal-300 text-left font-sans font-bold;
+      @apply pb-2 md:pl-0 text-3xl md:text-4xl text-slate-50 dark:text-slate-800 text-left font-sans font-bold;
   }
 
   h2 {
-      @apply font-sans text-xl uppercase text-teal-600 dark:text-teal-300 font-bold;
+      @apply font-sans text-xl uppercase text-black dark:text-white font-bold;
   }
 
   h3 {

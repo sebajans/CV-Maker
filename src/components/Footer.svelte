@@ -5,9 +5,9 @@
 </script>
 
 <div
-  class=" dark:text-primary-100 absolute z-10 bottom-0 inset-x-0 md:ml-40 py-5 px-2 text-xs text-center"
+  class="text-black dark:text-white absolute z-10 bottom-0 inset-x-0 py-5 px-2 text-xs text-center"
 >
-  &copy; Sebastian Jans, {now} –
+  &copy; Sebastian Jans, {now}
   <!-- <button
     aria-label="View Terms of Service PopUp"
     class="hover:text-primary-500 font-bold"

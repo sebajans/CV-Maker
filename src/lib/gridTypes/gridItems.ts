@@ -1,5 +1,13 @@
 import { writable, type Writable } from "svelte/store";
 
+export interface DataItem {
+  agency?: string;
+  description?: string;
+  position?: string;
+  date?: string;
+  location?: string;
+}
+
 export interface ItemType {
   id: string;
   x: number;
@@ -10,12 +18,7 @@ export interface ItemType {
   content: {
     h2?: string;
     h3?: string;
-    table?: {
-      rowsAmount?: number;
-      colsAmount?: number;
-      rowContent?: string[];
-      content?: string[];
-    };
+    data?: DataItem[];
     imgUrl?: string;
     text?: string[];
     list?: string[];
@@ -43,13 +46,19 @@ export const itemsStore: Writable<ItemType[]> = writable([
     y: 7,
     w: 6,
     h: 4,
-    type: "table",
+    type: "dataWithHeaderAndSubHeader",
     content: {
       h2: "Education",
       h3: "Degree in Materials Science",
-      table: {
-        rowsAmount: 1,
-      },
+      data: [
+        {
+          agency: "University of California",
+          location: "Berkeley, CA",
+          position: "B.S. Materials Science and Engineering",
+          date: "2016 - 2020",
+          description: "Test",
+        },
+      ],
     },
   },
   {
@@ -58,13 +67,18 @@ export const itemsStore: Writable<ItemType[]> = writable([
     y: 3,
     w: 6,
     h: 4,
-    type: "table",
+    type: "dataWithHeaderAndSubHeader",
     content: {
       h2: "Work Experience",
       h3: "Front-end Developer",
-      table: {
-        rowsAmount: 1,
-      },
+      data: [
+        {
+          title: "University of California",
+          description: "Berkeley, CA",
+          position: "B.S. Materials Science and Engineering",
+          date: "2016 - 2020",
+        },
+      ],
     },
   },
   {
