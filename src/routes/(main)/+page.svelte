@@ -5,12 +5,12 @@
 </script>
 
 <div
-  class="relative w-full h-screen overflow-hidden bg-gradient-to-b dark:from-slate-500 dark:to-slate-900 from-slate-300 to-slate-100"
+  class="relative w-full h-screen overflow-hidden bg-gradient-to-b dark:from-slate-500 dark:via-slate-900 via-95% dark:to-slate-900 from-slate-300 via-slate-100 to-slate-100"
 >
   <div class="flex flex-col h-2/3 justify-center items-center">
     <div class="max-w-3xl flex flex-col space-y-5">
       <h1
-        class="text-5xl p-4 drop-shadow-md text-center font-bold from-orange-400 to-orange-500 bg-gradient-to-r bg-clip-text text-transparent"
+        class="text-5xl p-4 drop-shadow-md text-center font-bold from-orange-400 to-orange-500 dark:from-orange-400 dark:to-orange-200 bg-gradient-to-r bg-clip-text !text-transparent"
       >
         Create your own modular CV
       </h1>

@@ -14,7 +14,7 @@
   ];
 </script>
 
-<div class="w-full h-[50vh] flex justify-center items-center">
+<div class="w-full h-[200vh] flex justify-center items-center">
   <Grid class="w-full h-full grid-container z-20" gap={10} rows={10} cols={10}>
     {#each items as item}
       <GridItem

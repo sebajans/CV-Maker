@@ -4,7 +4,7 @@
   import DarkModeButton from "$components/base/DarkModeButton.svelte";
   import LanguageSwitcher from "$components/base/LanguageSwitcher.svelte";
   import { fade } from "svelte/transition";
-  import Grid, { GridItem, type GridController } from "svelte-grid-extended";
+  import Grid, { type GridController } from "svelte-grid-extended";
   import { printPage } from "$lib/functions/printPage";
   import InPlaceEdit from "$components/InPlaceEdit.svelte";
   import { itemsStore, type ItemType } from "$lib/gridTypes/gridItems";
@@ -130,15 +130,55 @@
       title: "Image",
     },
   ];
+  let colorCombinations = [
+    {
+      id: 0,
+      mainColor: "#000000",
+      secondaryColor: "#ffffff",
+    },
+    {
+      id: 1,
+      mainColor: "#2d8d8d",
+      secondaryColor: "#dbdac6",
+    },
+    {
+      id: 2,
+      mainColor: "#b53525",
+      secondaryColor: "#d8c9e0",
+    },
+    {
+      id: 3,
+      mainColor: "#490dd6",
+      secondaryColor: "#eae4c9",
+    },
+    {
+      id: 4,
+      mainColor: "#3b32d5",
+      secondaryColor: "#d0dac8",
+    },
+    {
+      id: 5,
+      mainColor: "#3b2848",
+      secondaryColor: "#e0eedb",
+    },
+  ];
+  let selectedColor = 0;
+
+  let scrollY = 0;
+  $: console.log(scrollY);
 </script>
 
-<div class="hide-on-print fixed bottom-0 left-0 pt-4 px-4 flex">
+<svelte:window bind:scrollY />
+
+<div
+  class="hide-on-print fixed w-full bottom-0 left-1/2 -translate-x-1/2 pt-4 px-4 flex z-50"
+>
   <div
-    class="flex overflow-hidden p-1 flex-col justify-between items-center space-y-6 border shadow-md mb-4 z-50 w-52 bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
+    class="flex p-1 flex-row justify-start mx-auto items-center space-x-3 border shadow-md mb-4 w-full max-w-3xl bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
   >
-    <div class=" w-full flex flex-col">
-      <label class="p-2" for="item-type">Add item:</label>
-      <div class="flex flex-row space-x-1">
+    <div class="w-48 flex flex-col space-y-1">
+      <label class="h-10 px-1 py-2" for="item-type">Add new item:</label>
+      <div class="flex h-10 flex-row space-x-1">
         <div class="select">
           <select class=" w-full" bind:value={selectedType} id="item-type">
             <option value="" selected hidden>Select type</option>
@@ -156,18 +196,57 @@
         </button>
       </div>
     </div>
-
-    <div class="w-full flex space-x-1">
+    <div class="w-48 flex flex-col space-y-1">
+      <label class="h-10 px-1 py-2" for="item-type">Change Color palette:</label
+      >
+      <div
+        class="flex flex-row space-x-1 h-10 p-1 bg-white overflow-x-scroll rounded-md"
+      >
+        {#each colorCombinations as combination}
+          <div
+            role="button"
+            tabindex="0"
+            on:keydown={() => (selectedColor = combination.id)}
+            on:click={() => (selectedColor = combination.id)}
+            style="background: linear-gradient(to bottom right, {combination.mainColor} 0%, {combination.mainColor} 50%, {combination.secondaryColor} 50.1%, {combination.secondaryColor} 100%);
+          "
+            class=" rounded-full h-8 aspect-square"
+          >
+            <div
+              class="w-full h-full transition-all {combination.id ===
+              selectedColor
+                ? 'bg-black/50'
+                : 'hover:bg-black/50'} rounded-full flex justify-center items-center"
+            >
+              {#if combination.id === selectedColor}
+                <Icon
+                  class="h-6 w-6 self-center"
+                  color="white"
+                  icon="ic:round-check"
+                />
+              {/if}
+            </div>
+          </div>
+        {/each}
+        <!-- <select class=" w-full" bind:value={selectedType} id="item-type">
+            <option value="" selected hidden>Select type</option>
+            {#each differentTypes as type}
+              <option value={type.type}>{type.title}</option>
+            {/each}
+          </select>
+          <span class="focus" /> -->
+      </div>
+    </div>
+    <div class="w-28 flex flex-col space-y-1">
       <button
-        class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-center space-x-1 w-full h-10 rounded-md"
+        class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-start p-1.5 space-x-2 w-full h-10 rounded-md"
         on:click={printPage}
       >
         <Icon class="h-5 w-5" color="black" icon="ic:round-print" />
         <span class="font-sans text-black"> Print </span>
       </button>
-      <!-- <span class="w-1 h-full" /> -->
       <button
-        class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-center space-x-1 w-full h-10 rounded-md"
+        class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-start p-1.5 space-x-2 w-full h-10 rounded-md"
         on:click={printPage}
       >
         <Icon class="h-5 w-5" color="black" icon="material-symbols:download" />
@@ -180,14 +259,13 @@
 <div class="py-20">
   <page class="section-to-print space-y-10">
     <div
+      style="background-color: {colorCombinations[selectedColor]
+        .secondaryColor}; color: {colorCombinations[selectedColor].mainColor};"
       id="page-1"
-      class="!h-[29.7cm] p-[2cm] outline-1 shadow-xl !w-[21cm] flex flex-col justify-center bg-white dark:bg-black rounded-md"
+      class="!h-[29.7cm] p-[2cm] outline-1 shadow-xl !w-[21cm] flex flex-col justify-center rounded-md"
     >
       <div class="w-full">
-        <h1 class="text-black dark:text-white">
-          <!-- <InPlaceEdit bind:value={"CV"} on:submit={submit("Title")} /> -->
-          CV - Dow Jones
-        </h1>
+        <h1 class="text-black dark:text-white">CV - Dow Jones</h1>
       </div>
       <Grid
         rows={20}
@@ -197,7 +275,38 @@
         bind:controller={gridController}
       >
         {#each items as item, id}
-          <GridTypeItem {item} />
+          <GridTypeItem
+            {item}
+            colorPalette={colorCombinations[selectedColor]}
+          />
+        {/each}
+      </Grid>
+    </div>
+  </page>
+</div>
+<div class="py-20">
+  <page class="section-to-print space-y-10">
+    <div
+      style="background-color: {colorCombinations[selectedColor]
+        .secondaryColor}; color: {colorCombinations[selectedColor].mainColor};"
+      id="page-2"
+      class="!h-[29.7cm] p-[2cm] outline-1 shadow-xl !w-[21cm] flex flex-col justify-center rounded-md"
+    >
+      <div class="w-full">
+        <h1 class="text-black dark:text-white">CV - Dow Jones</h1>
+      </div>
+      <Grid
+        rows={20}
+        cols={10}
+        gap={8}
+        class="w-full h-full grid-container z-10"
+        bind:controller={gridController}
+      >
+        {#each items as item, id}
+          <GridTypeItem
+            {item}
+            colorPalette={colorCombinations[selectedColor]}
+          />
         {/each}
       </Grid>
     </div>

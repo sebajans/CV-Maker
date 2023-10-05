@@ -5,6 +5,12 @@
   import type { ItemType, DataItem } from "$lib/gridTypes/gridItems";
   import Icon from "@iconify/svelte";
   export let item: ItemType;
+  interface ColorCombination {
+    id: number;
+    mainColor: string;
+    secondaryColor: string;
+  }
+  export let colorPalette: ColorCombination;
 
   // let items: ItemType[];
   function submit(field: string) {
@@ -50,10 +56,12 @@
   let openSubMenu = false;
 
   function moveStart() {
+    console.log("moveStart");
     document.body.classList.add("disable-selection");
   }
 
   function moveEnd() {
+    console.log("moveEnd");
     document.body.classList.remove("disable-selection");
   }
 </script>
@@ -78,7 +86,6 @@
     on:pointerdown={moveStart}
     on:pointerup={moveEnd}
   >
-    <!-- transition:fade={{ duration: 300 }} -->
     {#if item.type === "image" && item.content.imgUrl !== undefined}
       <img
         class="pointer-events-none select-none w-full h-full rounded-full aspect-square object-cover"
@@ -87,12 +94,12 @@
       />
     {/if}
     {#if (item.type === "dataWithHeader" || item.type === "textWithHeader" || item.type === "listWithHeader" || item.type === "textWithHeaderAndSubHeader" || item.type === "dataWithHeaderAndSubHeader" || item.type === "listWithHeaderAndSubHeader") && item.content.h2 !== undefined}
-      <h2>
+      <h2 style="color: {colorPalette.mainColor}">
         <InPlaceEdit bind:value={item.content.h2} on:submit={submit("Title")} />
       </h2>
     {/if}
     {#if (item.type === "textWithHeaderAndSubHeader" || item.type === "dataWithHeaderAndSubHeader" || item.type === "listWithHeaderAndSubHeader") && item.content.h3 !== undefined}
-      <h3>
+      <h3 style="color: {colorPalette.mainColor}">
         <InPlaceEdit
           bind:value={item.content.h3}
           on:submit={submit("Subtitle")}
@@ -217,17 +224,27 @@
       </div>
     {/if}
   </div>
-  <button
-    on:mouseenter={() => (hovering = true)}
-    on:mouseleave={() => (hovering = false)}
-    on:click={() => console.log("options")}
-    class="{hovering ? 'opacity-100' : 'opacity-0'} absolute top-1 right-1"
-  >
-    <Icon
-      class="h-5 w-5 text-black/50 transition-colors hover:text-black"
-      icon="iconamoon:options-fill"
-    />
-  </button>
+  <div class="absolute top-1 right-1">
+    <button
+      on:mouseenter={() => (hovering = true)}
+      on:mouseleave={() => (hovering = false)}
+      on:click={() => (openSubMenu = !openSubMenu)}
+      class="{hovering ? 'opacity-100' : 'opacity-0'} absolute top-0 right-0"
+    >
+      <Icon
+        class="h-5 w-5 text-black/50 transition-colors hover:text-black"
+        icon="iconamoon:options-fill"
+      />
+    </button>
+    <div
+      class="{openSubMenu
+        ? 'opacity-100'
+        : 'opacity-0'} mt-6 p-1 bg-slate-50 shadow-sm flex flex-col space-y-1 rounded-md relative"
+    >
+      <button class="text-xs bg-slate-200 px-2 py-1"> color </button>
+      <button class="text-xs bg-slate-200 px-2 py-1"> color </button>
+    </div>
+  </div>
 </GridItem>
 
 <style>
