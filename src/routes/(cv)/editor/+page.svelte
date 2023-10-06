@@ -1,20 +1,15 @@
 <script lang="ts">
-  import { getTranslate } from "@tolgee/svelte";
   import T from "@tolgee/svelte/T.svelte";
-  import DarkModeButton from "$components/base/DarkModeButton.svelte";
-  import LanguageSwitcher from "$components/base/LanguageSwitcher.svelte";
-  import { fade } from "svelte/transition";
   import Grid, { type GridController } from "svelte-grid-extended";
   import { printPage } from "$lib/functions/printPage";
   import InPlaceEdit from "$components/InPlaceEdit.svelte";
   import { itemsStore, type ItemType } from "$lib/gridTypes/gridItems";
   import GridTypeItem from "$components/gridItems/GridTypeItem.svelte";
-  // import * as html2pdf from 'html2pdf.js';
-
+  import { typesOfGridItems } from "$lib/gridTypes/typesOfGridItems";
   import Icon from "@iconify/svelte";
-
-  const { t } = getTranslate();
-
+  import { colorCombinations } from "$lib/gridTypes/colorCombinations";
+  // import * as html2pdf from 'html2pdf.js';
+  import { addNewItem } from "$lib/functions/addNewItem";
   let items: ItemType[];
 
   // Subscribe to changes in the store
@@ -26,143 +21,71 @@
 
   let selectedType: string = ""; // Default type
 
-  function addNewItem(typeToUse: string = selectedType) {
-    const w = 3;
-    const h = 5;
-    const newPosition = gridController.getFirstAvailablePosition(w, h);
-    const newItemId = crypto.randomUUID();
+  // function addNewItem(typeToUse: string = selectedType) {
+  //   const w = 3;
+  //   const h = 5;
+  //   const newPosition = gridController.getFirstAvailablePosition(w, h);
+  //   const newItemId = crypto.randomUUID();
 
-    let newItem: ItemType;
-    newItem = {
-      id: newItemId,
-      x: newPosition ? newPosition.x : 0,
-      y: newPosition ? newPosition.y : 0,
-      w,
-      h,
-      type: typeToUse,
-      content: {
-        h2:
-          selectedType === "listWithHeader" ||
-          selectedType === "textWithHeader" ||
-          selectedType === "dataWithHeader" ||
-          selectedType === "listWithHeaderAndSubHeader" ||
-          selectedType === "textWithHeaderAndSubHeader" ||
-          selectedType === "dataWithHeaderAndSubHeader"
-            ? "New Title"
-            : undefined,
-        h3:
-          selectedType === "listWithHeaderAndSubHeader" ||
-          selectedType === "textWithHeaderAndSubHeader" ||
-          selectedType === "dataWithHeaderAndSubHeader"
-            ? "Subtitle"
-            : undefined,
-        text:
-          selectedType === "text" ||
-          selectedType === "textWithHeader" ||
-          selectedType === "textWithHeaderAndSubHeader"
-            ? ["Hello"]
-            : undefined,
-        list:
-          selectedType === "list" ||
-          selectedType === "listWithHeader" ||
-          selectedType === "listWithHeaderAndSubHeader"
-            ? ["Hello"]
-            : undefined,
-        data:
-          selectedType === "data" ||
-          selectedType === "dataWithHeader" ||
-          selectedType === "dataWithHeaderAndSubHeader"
-            ? [
-                {
-                  location: "Location",
-                  description: "Description",
-                  position: "Position",
-                  date: "Date",
-                  institution: "Institution",
-                },
-              ]
-            : undefined,
-      },
-    };
+  //   let newItem: ItemType;
+  //   newItem = {
+  //     id: newItemId,
+  //     x: newPosition ? newPosition.x : 0,
+  //     y: newPosition ? newPosition.y : 0,
+  //     w,
+  //     h,
+  //     type: typeToUse,
+  //     content: {
+  //       h2:
+  //         selectedType === "listWithHeader" ||
+  //         selectedType === "textWithHeader" ||
+  //         selectedType === "dataWithHeader" ||
+  //         selectedType === "listWithHeaderAndSubHeader" ||
+  //         selectedType === "textWithHeaderAndSubHeader" ||
+  //         selectedType === "dataWithHeaderAndSubHeader"
+  //           ? "New Title"
+  //           : undefined,
+  //       h3:
+  //         selectedType === "listWithHeaderAndSubHeader" ||
+  //         selectedType === "textWithHeaderAndSubHeader" ||
+  //         selectedType === "dataWithHeaderAndSubHeader"
+  //           ? "Subtitle"
+  //           : undefined,
+  //       text:
+  //         selectedType === "text" ||
+  //         selectedType === "textWithHeader" ||
+  //         selectedType === "textWithHeaderAndSubHeader"
+  //           ? ["Hello"]
+  //           : undefined,
+  //       list:
+  //         selectedType === "list" ||
+  //         selectedType === "listWithHeader" ||
+  //         selectedType === "listWithHeaderAndSubHeader"
+  //           ? ["Hello"]
+  //           : undefined,
+  //       data:
+  //         selectedType === "data" ||
+  //         selectedType === "dataWithHeader" ||
+  //         selectedType === "dataWithHeaderAndSubHeader"
+  //           ? [
+  //               {
+  //                 location: "Location",
+  //                 description: "Description",
+  //                 position: "Position",
+  //                 date: "Date",
+  //                 institution: "Institution",
+  //               },
+  //             ]
+  //           : undefined,
+  //     },
+  //   };
 
-    itemsStore.update((currentItems) => [...currentItems, newItem]);
-  }
+  //   itemsStore.update((currentItems) => [...currentItems, newItem]);
+  // }
 
-  const differentTypes = [
-    {
-      type: "text",
-      title: "Text",
-    },
-    {
-      type: "textWithHeader",
-      title: "Text + Header",
-    },
-    {
-      type: "textWithHeaderAndSubHeader",
-      title: "Heading + Subheading + Text",
-    },
-    {
-      type: "data",
-      title: "Data",
-    },
-    {
-      type: "dataWithHeader",
-      title: "Data + Header",
-    },
-    {
-      type: "dataWithHeaderAndSubHeader",
-      title: "Data + Header + Subheader",
-    },
-    {
-      type: "list",
-      title: "List",
-    },
-    {
-      type: "listWithHeader",
-      title: "List + Header",
-    },
-    {
-      type: "listWithHeaderAndSubHeader",
-      title: "List + Header + Subheader",
-    },
-    {
-      type: "image",
-      title: "Image",
-    },
-  ];
-  let colorCombinations = [
-    {
-      id: 0,
-      mainColor: "#000000",
-      secondaryColor: "#ffffff",
-    },
-    {
-      id: 1,
-      mainColor: "#2d8d8d",
-      secondaryColor: "#dbdac6",
-    },
-    {
-      id: 2,
-      mainColor: "#b53525",
-      secondaryColor: "#d8c9e0",
-    },
-    {
-      id: 3,
-      mainColor: "#490dd6",
-      secondaryColor: "#eae4c9",
-    },
-    {
-      id: 4,
-      mainColor: "#3b32d5",
-      secondaryColor: "#d0dac8",
-    },
-    {
-      id: 5,
-      mainColor: "#3b2848",
-      secondaryColor: "#e0eedb",
-    },
-  ];
   let selectedColor = 0;
+
+  // https://www.npmjs.com/package/svelte-awesome-color-picker
 
   let scrollY = 0;
   $: console.log(scrollY);
@@ -174,15 +97,15 @@
   class="hide-on-print fixed w-full bottom-0 left-1/2 -translate-x-1/2 pt-4 px-4 flex z-50"
 >
   <div
-    class="flex p-1 flex-row justify-start mx-auto items-center space-x-3 border shadow-md mb-4 w-full max-w-3xl bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
+    class="flex p-1 flex-row justify-start mx-auto items-center space-x-2 border shadow-md mb-4 w-fit max-w-3xl bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
   >
-    <div class="w-48 flex flex-col space-y-1">
+    <div class="w-36 flex flex-col space-y-2">
       <label class="h-10 px-1 py-2" for="item-type">Add new item:</label>
       <div class="flex h-10 flex-row space-x-1">
         <div class="select">
           <select class=" w-full" bind:value={selectedType} id="item-type">
             <option value="" selected hidden>Select type</option>
-            {#each differentTypes as type}
+            {#each typesOfGridItems as type}
               <option value={type.type}>{type.title}</option>
             {/each}
           </select>
@@ -196,9 +119,28 @@
         </button>
       </div>
     </div>
-    <div class="w-48 flex flex-col space-y-1">
-      <label class="h-10 px-1 py-2" for="item-type">Change Color palette:</label
-      >
+    <div class="w-36 flex flex-col space-y-2">
+      <label class="h-10 px-1 py-2" for="item-type">Item Storage:</label>
+      <div class="flex h-10 flex-row space-x-1">
+        <div class="select w-full">
+          <select class=" w-full" bind:value={selectedType} id="item-type">
+            <option value="" selected hidden>Select type</option>
+            {#each items as type}
+              <option value={type.type}>{type.content.h2}</option>
+            {/each}
+          </select>
+          <span class="focus" />
+        </div>
+        <button
+          class="bg-white p-1 hover:bg-slate-200 transition-all rounded-md flex flex-row"
+          on:click={() => addNewItem(selectedType)}
+        >
+          <Icon class="h-6 w-6 self-center" color="black" icon="ic:round-add" />
+        </button>
+      </div>
+    </div>
+    <div class="w-32 flex flex-col space-y-2">
+      <label class="h-10 px-1 py-2" for="item-type">Color palette:</label>
       <div
         class="flex flex-row space-x-1 h-10 p-1 bg-white overflow-x-scroll rounded-md"
       >
@@ -237,7 +179,7 @@
           <span class="focus" /> -->
       </div>
     </div>
-    <div class="w-28 flex flex-col space-y-1">
+    <div class="w-24 flex flex-col space-y-2">
       <button
         class="bg-white flex hover:bg-gray-200 transition-all flex-row items-center justify-start p-1.5 space-x-2 w-full h-10 rounded-md"
         on:click={printPage}

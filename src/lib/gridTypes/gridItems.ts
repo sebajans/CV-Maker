@@ -37,7 +37,20 @@ export const itemsStore: Writable<ItemType[]> = writable([
     content: {
       h2: "Introduction",
       h3: "",
-      text: ["Test"],
+      text: ["Results-driven professional seeking a challenging role in [industry/field]. Proven track record in [key skills/experience] with a focus on [specific achievements]. Ready to contribute strategic and innovative solutions to drive organizational success."],
+    },
+  },
+  {
+    id: crypto.randomUUID(),
+    x: 7,
+    y: 4,
+    w: 3,
+    h: 6,
+    type: "listWithHeaderAndSubHeader",
+    content: {
+      h2: "Skills",
+      h3: "",
+      list: ["Skill 1", "Skill 2", "Skill 3"],
     },
   },
   {
@@ -54,7 +67,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
   {
     id: crypto.randomUUID(),
     x: 0,
-    y: 7,
+    y: 8,
     w: 7,
     h: 4,
     type: "dataWithHeaderAndSubHeader",
@@ -75,7 +88,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
   {
     id: crypto.randomUUID(),
     x: 0,
-    y: 3,
+    y: 4,
     w: 7,
     h: 4,
     type: "dataWithHeaderAndSubHeader",
@@ -96,7 +109,7 @@ export const itemsStore: Writable<ItemType[]> = writable([
   {
     id: crypto.randomUUID(),
     x: 0,
-    y: 11,
+    y: 12,
     w: 6,
     h: 4,
     type: "listWithHeaderAndSubHeader",
