@@ -7,15 +7,52 @@
   import GridTypeItem from "$components/gridItems/GridTypeItem.svelte";
   import { typesOfGridItems } from "$lib/gridTypes/typesOfGridItems";
   import Icon from "@iconify/svelte";
-  import { colorCombinations } from "$lib/gridTypes/colorCombinations";
+  import {
+    colorCombinations,
+    addColorCombination,
+    type ColorCombinationType,
+  } from "$lib/gridTypes/colorCombinations";
   // import * as html2pdf from 'html2pdf.js';
   import { addNewItem } from "$lib/functions/addNewItem";
+  import ColorPicker from "svelte-awesome-color-picker";
+  import ColorPickerWrapper from "$components/ColorPickerWrapper.svelte";
+  import { clickOutside } from "$lib/functions/clickOutside";
+  import { fade } from "svelte/transition";
+  import { onMount } from "svelte";
+  let hex: string;
+  let hex2: string;
+
   let items: ItemType[];
 
   // Subscribe to changes in the store
   itemsStore.subscribe((value) => {
     items = value;
   });
+
+  // onMount(() => {
+  //   // Add initial color combination
+  //   addColorCombination();
+  // });
+  $: {
+    const combinedColors: ColorCombinationType = {
+      id:
+        colorCombinations.length > 0
+          ? colorCombinations[colorCombinations.length - 1].id
+          : 0,
+      mainColor: hex || "#000000",
+      secondaryColor: hex2 || "#ffffff",
+    };
+
+    // Check if the combinedColors is different from the last item in colorCombinations
+    if (
+      !colorCombinations.length ||
+      JSON.stringify(combinedColors) !==
+        JSON.stringify(colorCombinations[colorCombinations.length - 1])
+    ) {
+      // Add the combinedColors only if it's different
+      addColorCombination(combinedColors);
+    }
+  }
 
   let gridController: GridController;
 
@@ -83,10 +120,16 @@
   //   itemsStore.update((currentItems) => [...currentItems, newItem]);
   // }
 
-  let selectedColor = 0;
+  let selectedColor = 1;
+  let expandColorPalette = false;
+  false;
 
+  let isColorPickerOpen = true;
+  let isOpen = true;
   // https://www.npmjs.com/package/svelte-awesome-color-picker
 
+  $: isOpen;
+  $: isColorPickerOpen;
   let scrollY = 0;
   $: console.log(scrollY);
 </script>
@@ -94,17 +137,69 @@
 <svelte:window bind:scrollY />
 
 <div
-  class="hide-on-print fixed w-full bottom-0 left-1/2 -translate-x-1/2 pt-4 px-4 flex z-50"
+  class="hide-on-print fixed w-full bottom-0 left-1/2 -translate-x-1/2 pt -4 px-4 flex z-50"
 >
+  {#if isColorPickerOpen}
+    <div
+      transition:fade={{ duration: 300 }}
+      class="absolute -translate-x-1/2 transition-all left-1/2 top-0 bg-teal-600/30 backdrop-blur-md flex flex-row w-auto -translate-y-[calc(100%_+_0.5rem)] z-10 rounded-md"
+    >
+      <div class="w-10 flex flex-col space-y-2 h-full p-1.5">
+        <div class="h-full max-h-10 w-8 rounded-md overflow-hidden">
+          <ColorPicker
+            label=""
+            isAlpha={false}
+            {isOpen}
+            isPopup={false}
+            canChangeMode={true}
+            bind:hex
+            components={{ wrapper: ColorPickerWrapper }}
+          />
+        </div>
+        <div class="h-full max-h-10 w-8 rounded-md overflow-hidden">
+          <ColorPicker
+            label=""
+            isAlpha={false}
+            isOpen={!isOpen}
+            isPopup={false}
+            canChangeMode={true}
+            bind:hex={hex2}
+            components={{ wrapper: ColorPickerWrapper }}
+          />
+        </div>
+      </div>
+
+      <div
+        transition:fade={{ duration: 300 }}
+        id="colorpicker-wrapper"
+        class="[--picker-height:100%] {expandColorPalette
+          ? 'max-h-52 h-52 pb-1'
+          : 'max-h-20 h-20'}  transition-all delay-100"
+      />
+      <!-- <div class="relative w-full flex justify-center"> -->
+      <button
+        on:mouseenter={() => {
+          expandColorPalette = !expandColorPalette;
+        }}
+        class="w-8 p-1 absolute -top-1.5 left-1/2 -translate-x-1/2 h-1.5 group hover:h-3 duration-300 hover:cursor-pointer bg-teal-600/30 transition-all"
+      >
+        <div class="w-full bg-white h-px z-10" />
+        <div
+          class="-translate-y-px group-hover:translate-y-0.5 duration-500 transition-transform w-full bg-white h-px z-10"
+        />
+      </button>
+      <!-- </div> -->
+    </div>
+  {/if}
   <div
-    class="flex p-1 flex-row justify-start mx-auto items-center space-x-2 border shadow-md mb-4 w-fit max-w-3xl bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
+    class="flex relative p-1 flex-row justify-start mx-auto items-center space-x-2 shadow-md mb-4 w-fit max-w-3xl bg-teal-600/30 dark:bg-teal-400/50 backdrop-blur-md rounded-md"
   >
     <div class="w-36 flex flex-col space-y-2">
       <label class="h-10 px-1 py-2" for="item-type">Add new item:</label>
       <div class="flex h-10 flex-row space-x-1">
         <div class="select">
           <select class=" w-full" bind:value={selectedType} id="item-type">
-            <option value="" selected hidden>Select type</option>
+            <option value="" selected hidden>Add new</option>
             {#each typesOfGridItems as type}
               <option value={type.type}>{type.title}</option>
             {/each}
@@ -150,8 +245,7 @@
             tabindex="0"
             on:keydown={() => (selectedColor = combination.id)}
             on:click={() => (selectedColor = combination.id)}
-            style="background: linear-gradient(to bottom right, {combination.mainColor} 0%, {combination.mainColor} 50%, {combination.secondaryColor} 50.1%, {combination.secondaryColor} 100%);
-          "
+            style="background: linear-gradient(to bottom right, {combination.mainColor} 0%, {combination.mainColor} 50%, {combination.secondaryColor} 50.1%, {combination.secondaryColor} 100%);"
             class=" rounded-full h-8 aspect-square"
           >
             <div
@@ -170,6 +264,46 @@
             </div>
           </div>
         {/each}
+        <button
+          on:click={() => {
+            isColorPickerOpen = !isColorPickerOpen;
+            console.log(isColorPickerOpen);
+            selectedColor = 7;
+          }}
+          style="background: conic-gradient(#ff0000, #ffff00 17.2%, #ffff00 18.2%, #00ff00 33.3%, #00ffff 49.5%, #00ffff 51.5%,
+          #0000ff 67.7%, #ff00ff 83.3%, #ff0000)"
+          class=" relative rounded-full h-8 aspect-square"
+        >
+          <!-- <button class="bg-slate-500 w-full h-full" /> -->
+          <!-- <ColorPicker
+            label=""
+            isAlpha={false}
+            {isOpen}
+            isPopup={false}
+            canChangeMode={false}
+            bind:hex
+            components={{ wrapper: ColorPickerWrapper }}
+          /> -->
+        </button>
+        <div
+          role="button"
+          tabindex="0"
+          class="relative rounded-full bg-black h-8 !w-8 overflow-hidden"
+        >
+          <!-- <div class="w-full h-full"> -->
+
+          <!-- </div> -->
+        </div>
+        <!-- <div
+          role="button"
+          tabindex="0"
+          on:keydown={() => (selectedColor = 0)}
+          on:click={() => (selectedColor = 0)}
+          class=" rounded-full h-8 aspect-square"
+        >
+
+      </div> -->
+
         <!-- <select class=" w-full" bind:value={selectedType} id="item-type">
             <option value="" selected hidden>Select type</option>
             {#each differentTypes as type}
@@ -260,6 +394,41 @@
     --select-border: #777;
     --select-focus: blue;
     --select-arrow: var(--select-border);
+    /* --picker-height: 50px; */
+  }
+
+  :global(input[type="color"]) {
+    border-radius: 0 !important;
+    height: 100% !important;
+    margin: 0px !important;
+    width: 100% !important;
+  }
+  :global(div .color) {
+    border-radius: 0 !important;
+    @apply m-0;
+  }
+  :global(
+      .color-picker > label > .container > .alpha,
+      .color-picker > label > .container > .color
+    ) {
+    height: 100%;
+    width: 100%;
+  }
+  :global(.picker-wrapper) {
+    height: 100%;
+  }
+  :global(#colorpicker-wrapper > .wrapper) {
+    height: 100%;
+  }
+
+  :global(.color-picker > label) {
+    height: 32px;
+    margin: 0px !important;
+    border-radius: 0px !important;
+  }
+  :global(.color-picker > label > .container) {
+    width: 100%;
+    aspect-ratio: 1/1;
   }
 
   * {

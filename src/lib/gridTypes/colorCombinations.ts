@@ -1,10 +1,11 @@
-interface ColorCombinationType {
+export interface ColorCombinationType {
   id: number;
   mainColor: string;
   secondaryColor: string;
 }
 
 export let colorCombinations: ColorCombinationType[] = [
+
   {
     id: 0,
     mainColor: "#000000",
@@ -12,11 +13,6 @@ export let colorCombinations: ColorCombinationType[] = [
   },
   {
     id: 1,
-    mainColor: "#2d8d8d",
-    secondaryColor: "#dbdac6",
-  },
-  {
-    id: 2,
     mainColor: "#b53525",
     secondaryColor: "#d8c9e0",
   },
@@ -35,4 +31,13 @@ export let colorCombinations: ColorCombinationType[] = [
     mainColor: "#3b2848",
     secondaryColor: "#e0eedb",
   },
+  {
+    id: 6,
+    mainColor: "#2d8d8d",
+    secondaryColor: "#dbdac6",
+  },
 ];
+
+export function addColorCombination(combination: ColorCombinationType): void {
+  colorCombinations = [...colorCombinations, combination];
+}

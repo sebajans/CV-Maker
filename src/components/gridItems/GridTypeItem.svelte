@@ -4,6 +4,8 @@
   import InPlaceEdit from "../InPlaceEdit.svelte";
   import type { ItemType, DataItem } from "$lib/gridTypes/gridItems";
   import Icon from "@iconify/svelte";
+  import { clickOutside } from "../../lib/functions/clickOutside";
+
   export let item: ItemType;
   interface ColorCombination {
     id: number;
@@ -54,6 +56,7 @@
   }
   let hovering = false;
   let openSubMenu = false;
+  let openOptionsMenu = false;
 
   function moveStart() {
     console.log("moveStart");
@@ -224,11 +227,16 @@
       </div>
     {/if}
   </div>
-  <div class="absolute top-1 right-1">
+  <div
+    use:clickOutside={() => {
+      openOptionsMenu = false;
+    }}
+    class="absolute top-1 right-1"
+  >
     <button
       on:mouseenter={() => (hovering = true)}
       on:mouseleave={() => (hovering = false)}
-      on:click={() => (openSubMenu = !openSubMenu)}
+      on:click={() => (openOptionsMenu = true)}
       class="{hovering ? 'opacity-100' : 'opacity-0'} absolute top-0 right-0"
     >
       <Icon
@@ -237,7 +245,7 @@
       />
     </button>
     <div
-      class="{openSubMenu
+      class="{openOptionsMenu
         ? 'opacity-100'
         : 'opacity-0'} mt-6 p-1 bg-slate-50 shadow-sm flex flex-col space-y-1 rounded-md relative"
     >
